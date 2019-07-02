@@ -1,0 +1,6 @@
+file(System.properties['projects_dir']).eachDirRecurse { dir ->
+    if (file(dir.path + '/build.gradle').exists()) {
+        include dir.name
+        project(":${dir.name}").projectDir = dir
+    }
+}

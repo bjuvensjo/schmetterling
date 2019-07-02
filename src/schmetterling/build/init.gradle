@@ -1,0 +1,23 @@
+import groovy.json.JsonOutput
+
+gradle.buildFinished { BuildResult result ->
+    def all = [:]
+    def failures = [:]
+
+    result.gradle.taskGraph.allTasks.each { Task t ->
+        if (t.state.failure) {
+            failures[t.project.projectDir] = [group  : t.project.group,
+                                              name   : t.project.name,
+                                              version: t.project.version,
+                                              result : 'FAILURE',
+                                              message  : t.state.failure.message]
+        }
+        all[t.project.projectDir] = [group  : t.project.group,
+                                     name   : t.project.name,
+                                     version: t.project.version,
+                                     result : 'SUCCESS']
+    }
+
+    def json = JsonOutput.toJson(all + failures)
+    new File('build_result.json').text = JsonOutput.prettyPrint(json)
+}
