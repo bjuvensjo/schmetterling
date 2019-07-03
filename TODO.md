@@ -10,3 +10,7 @@ Use previous state where applicable:
 1. schmetterling.setup.tfs
 2. schmetterling.build.maven
 3. schmetterling.analyze.sonarqube
+
+### Credentials
+
+1. Use pipeline credentials, i.e. not environment variables

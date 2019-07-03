@@ -5,8 +5,8 @@ from vang.core.core import select_keys
 from schmetterling.build.state import Build
 from schmetterling.build.state import BuildState
 from schmetterling.core.git import get_commit
-from schmetterling.core.git import push
 from schmetterling.core.git import get_tag
+from schmetterling.core.git import push
 from schmetterling.core.log import log_params_return
 from schmetterling.push.state import PushState
 from schmetterling.push.state import Repo
@@ -17,18 +17,15 @@ def create_state(pushed_repos):
     return PushState(__name__, [Repo(**r) for r in pushed_repos])
 
 
-# TODO Uncomment real push and remove prints
 @log_params_return('debug')
 def do_push(success_builds):
     @log_params_return('debug')
     def f(build):
         repo_dir = build['path']
-        # push(repo_dir)
-        print('#####', repo_dir)
+        push(repo_dir)
         head_tag = get_tag(repo_dir)
         if head_tag:
-            # push(repo_dir, ref=head_tag)
-            print('#####', repo_dir, head_tag)
+            push(repo_dir, ref=head_tag)
         return dict(build, commit=get_commit(repo_dir), tag=head_tag)
 
     return pmap(f, success_builds)
