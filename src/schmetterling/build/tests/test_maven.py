@@ -28,27 +28,27 @@ def test_build_multi_modules():
     with patch(
             'schmetterling.build.maven.create_command',
             return_value='create_command') as m_create_command, patch(
-                'schmetterling.build.maven.run_command') as m_run_command, patch(
-                    'schmetterling.build.maven.create_build_result',
-                    return_value=[['success_coordinates'], [
-                        'failure_coordinates'
-                    ]]) as m_create_build_result:
+        'schmetterling.build.maven.run_command') as m_run_command, patch(
+        'schmetterling.build.maven.create_build_result',
+        return_value=[['success_coordinates'], [
+            'failure_coordinates'
+        ]]) as m_create_build_result:
         assert (
-            ['success_coordinates', 'success_coordinates'],
-            ['failure_coordinates', 'failure_coordinates'],
-        ) == build_multi_modules(mm)
+                   ['success_coordinates', 'success_coordinates'],
+                   ['failure_coordinates', 'failure_coordinates'],
+               ) == build_multi_modules(mm, 'repository_dir', 'settings_file', 'logback_file')
         assert [
-            call('updated1', 'pom_dir1/mvn.log'),
-            call('updated2', 'pom_dir2/mvn.log')
-        ] == m_create_command.mock_calls
+                   call('updated1', 'pom_dir1/mvn.log', 'repository_dir', 'settings_file', 'logback_file'),
+                   call('updated2', 'pom_dir2/mvn.log', 'repository_dir', 'settings_file', 'logback_file')
+               ] == m_create_command.mock_calls
         assert [
-            call('create_command', cwd='pom_dir1'),
-            call('create_command', cwd='pom_dir2')
-        ] == m_run_command.mock_calls
+                   call('create_command', cwd='pom_dir1'),
+                   call('create_command', cwd='pom_dir2')
+               ] == m_run_command.mock_calls
         assert [
-            call('coordinates1', 'updated1', 'pom_dir1/mvn.log'),
-            call('coordinates2', 'updated2', 'pom_dir2/mvn.log')
-        ] == m_create_build_result.mock_calls
+                   call('coordinates1', 'updated1', 'pom_dir1/mvn.log'),
+                   call('coordinates2', 'updated2', 'pom_dir2/mvn.log')
+               ] == m_create_build_result.mock_calls
 
 
 def test_create_command():
@@ -61,13 +61,13 @@ def test_create_command():
                '-B -amd -pl mygroup:app.admin,mygroup:app.sign '
                'clean install javadoc:jar source:jar '
                '--fail-at-end | tee mvn.log') == create_command(
-                   [{
-                       'artifact_id': 'app.admin',
-                       'group_id': 'mygroup',
-                   }, {
-                       'artifact_id': 'app.sign',
-                       'group_id': 'mygroup',
-                   }], 'mvn.log', 'repository', 'settings.xml', 'logback.xml')
+        [{
+            'artifact_id': 'app.admin',
+            'group_id': 'mygroup',
+        }, {
+            'artifact_id': 'app.sign',
+            'group_id': 'mygroup',
+        }], 'mvn.log', 'repository', 'settings.xml', 'logback.xml')
 
 
 @patch(
@@ -75,23 +75,23 @@ def test_create_command():
     return_value=(['mygroup:app.admin'], ['app.sign']))
 def test_create_build_result(mock_get_summary):
     assert (
-        [
-            {
-                'artifact_id': 'app.admin',
-                'group_id': 'mygroup',
-            },
-        ],
-        [
-            {
-                'artifact_id': 'app.sign',
-                'group_id': 'mygroup',
-            },
-            {
-                'artifact_id': 'pipeline.env',
-                'group_id': 'mygroup',
-            },
-        ],
-    ) == create_build_result(
+               [
+                   {
+                       'artifact_id': 'app.admin',
+                       'group_id': 'mygroup',
+                   },
+               ],
+               [
+                   {
+                       'artifact_id': 'app.sign',
+                       'group_id': 'mygroup',
+                   },
+                   {
+                       'artifact_id': 'pipeline.env',
+                       'group_id': 'mygroup',
+                   },
+               ],
+           ) == create_build_result(
         [
             {
                 'artifact_id': 'app.admin',
@@ -150,13 +150,15 @@ def test_create_multi_modules():
 
 
 def test_create_state():
-    state = BuildState([
-        Build('mygroup', 'app.admin', '0.0.1-SNAPSHOT', 'app.admin',
-              Build.SUCCESS, 1),
-        Build('mygroup', 'pipeline-apache-proxy', '1.0.0-SNAPSHOT',
-               'pipeline-apache-proxy', Build.FAILURE, 1),
-    ])
+    state = BuildState('schmetterling.build.maven',
+                       [
+                           Build('mygroup', 'app.admin', '0.0.1-SNAPSHOT', 'app.admin',
+                                 Build.SUCCESS, 1),
+                           Build('mygroup', 'pipeline-apache-proxy', '1.0.0-SNAPSHOT',
+                                 'pipeline-apache-proxy', Build.FAILURE, 1),
+                       ])
     assert state == create_state(
+        [],
         [{
             'pom_path': 'app.admin/pom.xml',
             'artifact_id': 'app.admin',
@@ -223,9 +225,9 @@ def test_get_multi_modules():
                 'packaging': 'pom'
             }],
             'pom_content':
-            'pom_content',
+                'pom_content',
             'pom_dir':
-            'build_dir/super-pom-modules',
+                'build_dir/super-pom-modules',
             'updated': [{
                 'artifact_id': 'super-pom',
                 'packaging': 'pom'
@@ -289,9 +291,9 @@ def test_get_multi_modules():
                 'artifact_id': 'jar3'
             }],
             'pom_content':
-            'pom_content',
+                'pom_content',
             'pom_dir':
-            'build_dir/jar-modules',
+                'build_dir/jar-modules',
             'updated': [{
                 'artifact_id': 'jar1',
                 'packaging': 'jar'

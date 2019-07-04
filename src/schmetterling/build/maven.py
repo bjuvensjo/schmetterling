@@ -2,7 +2,6 @@
 from logging import getLogger
 from os import makedirs
 from os.path import exists
-from shutil import rmtree
 
 from vang.maven.multi_module_project import get_pom
 from vang.maven.pom import get_pom_info
@@ -46,14 +45,14 @@ def create_build_result(coordinates, build_modules, mvn_log):
     successes, failures = get_summary([mvn_log])
     success_coordinates = [
         c for c in coordinates if c['artifact_id'] in successes
-        or f'{c["group_id"]}:{c["artifact_id"]}' in successes
+                                  or f'{c["group_id"]}:{c["artifact_id"]}' in successes
     ]
     # Maven does not log all types of errors in the reactor summary so add all
     # modules to build failures that are not found as successes
     failure_coordinates = [
         c for c in coordinates
         if c['artifact_id'] in failures or f'{c["group_id"]}:{c["artifact_id"]}'
-        in failures or (c in build_modules and c not in success_coordinates)
+           in failures or (c in build_modules and c not in success_coordinates)
     ]
     return success_coordinates, failure_coordinates
 
@@ -132,16 +131,16 @@ def get_multi_modules(maven_infos, build_dir):
     for modules_dir, filtered_maven_info in [
         ('super-pom-modules', [(mu, mi) for mu, mi in maven_infos
                                if 'packaging' in mi and mi['packaging'] == 'pom'
-                               and 'super' in mi['artifact_id']]),
+                                  and 'super' in mi['artifact_id']]),
         ('pom-pom-modules', [(mu, mi) for mu, mi in maven_infos
                              if 'packaging' in mi and mi['packaging'] == 'pom'
-                             and 'super' not in mi['artifact_id']]),
+                                and 'super' not in mi['artifact_id']]),
         ('other-modules', [(mu, mi) for mu, mi in maven_infos
                            if 'packaging' in mi and mi['packaging']
-                           and mi['packaging'] not in ['jar', 'pom', 'war']]),
+                              and mi['packaging'] not in ['jar', 'pom', 'war']]),
         ('jar-modules', [(mu, mi) for mu, mi in maven_infos
                          if 'packaging' not in mi or not mi['packaging']
-                         or mi['packaging'] == 'jar']),
+                            or mi['packaging'] == 'jar']),
         ('war-modules', [(mu, mi) for mu, mi in maven_infos
                          if 'packaging' in mi and mi['packaging'] == 'war']),
     ]:
@@ -183,11 +182,6 @@ def get_not_built_paths(maven_infos, success_coordinates, failure_coordinates):
 
 @log_params_return('debug')
 def get_previous_builds(not_builded_paths, previous_state_file_path):
-
-    print("#####")
-    print(previous_state_file_path)
-    print("#####")
-
     if previous_state_file_path:
         return [
             b for s in load(previous_state_file_path)
