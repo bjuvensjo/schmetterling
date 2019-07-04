@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import logging
 from functools import partial
-from json import dumps
 from re import sub
 
 from vang.bitbucket.api import call
@@ -82,8 +81,7 @@ def set_single_status(build_url, build_state):
     state = STATUS_SUCCESSFUL if status == Build.SUCCESS else STATUS_FAILED
     commit_id = [b.head for b in repo.branches
                  if b.name == repo.setup_branch][0]
-    request_data = dumps({'state': state, 'key': commit_id, 'url': build_url})
-
+    request_data = {'state': state, 'key': commit_id, 'url': build_url}
     return repo, commit_id, state, build_url, call(
         f'/rest/build-status/1.0/commits/{commit_id}', request_data, 'POST')
 
