@@ -44,7 +44,7 @@ def get_build_state(state, repos, timestamp):
         for s in state if isinstance(s, BuildState) for b in s.builds
         if b.timestamp == timestamp
     }
-    return [(r, build_map[r.path]) for r in repos]
+    return [(r, build_map[r.path]) for r in repos if r.path in build_map]
 
 
 @log_params_return('debug')

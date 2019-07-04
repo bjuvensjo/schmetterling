@@ -35,10 +35,10 @@ def test_get_build_state():
         MagicMock(path='p2', status='failure', timestamp='2'),
         MagicMock(path='p3', status='success', timestamp='1')
     ]
-    repos = [MagicMock(path='p1'), MagicMock(path='p3')]
+    repos = [MagicMock(path='p1'), MagicMock(path='p2'), MagicMock(path='p3'), MagicMock(path='p4')]
     assert [] == get_build_state([], [], '1')
-    assert list(zip(repos, [b.status for b in builds if b.timestamp == '1'])) == get_build_state(
-        [BuildState('step', builds)], repos, '1')
+    assert list(zip([repos[0], repos[2]], [b.status for b in builds if b.timestamp == '1'])) == get_build_state(
+            [BuildState('step', builds)], repos, '1')
 
 
 def test_get_build_url():
