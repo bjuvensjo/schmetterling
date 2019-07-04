@@ -83,7 +83,7 @@ def set_single_status(build_url, build_state):
                  if b.name == repo.setup_branch][0]
     request_data = {'state': state, 'key': commit_id, 'url': build_url}
     return repo, commit_id, state, build_url, call(
-        f'/rest/build-status/1.0/commits/{commit_id}', request_data, 'POST')
+        f'/rest/build-status/1.0/commits/{commit_id}', request_data, 'POST', only_response_code=True)
 
 
 @log_params_return('debug')
