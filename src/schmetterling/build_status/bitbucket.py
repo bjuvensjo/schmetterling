@@ -38,10 +38,11 @@ def get_bitbucket_repos(state, url):
 
 
 @log_params_return('debug')
-def get_build_state(state, repos):
+def get_build_state(state, repos, timestamp):
     build_map = {
         b.path: b.status
         for s in state if isinstance(s, BuildState) for b in s.builds
+        if b.timestamp == timestamp
     }
     return [(r, build_map[r.path]) for r in repos]
 
@@ -92,9 +93,9 @@ def set_status(build_state, build_url):
 
 
 @log_params_return('info')
-def execute(state, url, build_log_params):
+def execute(state, url, timestamp, build_log_params):
     repos = get_bitbucket_repos(state, url)
-    build_state = get_build_state(state, repos)
+    build_state = get_build_state(state, repos, timestamp)
     log_file = get_log_file(state)
     build_url = get_build_url(log_file, **build_log_params)
     statuses = set_status(build_state, build_url)

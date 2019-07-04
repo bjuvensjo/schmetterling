@@ -31,14 +31,14 @@ def test_get_bitbucket_repos():
 
 def test_get_build_state():
     builds = [
-        MagicMock(path='p1', status='success'),
-        MagicMock(path='p2', status='failure'),
-        MagicMock(path='p3', status='success')
+        MagicMock(path='p1', status='success', timestamp='1'),
+        MagicMock(path='p2', status='failure', timestamp='2'),
+        MagicMock(path='p3', status='success', timestamp='1')
     ]
-    repos = [MagicMock(path='p1'), MagicMock(path='p2')]
-    assert [] == get_build_state([], [])
-    assert list(zip(repos, [b.status for b in builds])) == get_build_state(
-        [BuildState('step', builds)], repos)
+    repos = [MagicMock(path='p1'), MagicMock(path='p3')]
+    assert [] == get_build_state([], [], '1')
+    assert list(zip(repos, [b.status for b in builds if b.timestamp == '1'])) == get_build_state(
+        [BuildState('step', builds)], repos, '1')
 
 
 def test_get_build_url():
@@ -94,11 +94,12 @@ def test_set_single_status():
         assert (repo, 'develop_head', 'SUCCESSFUL', 'build_url',
                 204) == set_single_status('build_url', (repo, Build.SUCCESS))
         assert [
-            call(
-                '/rest/build-status/1.0/commits/develop_head',
-                '{"state": "SUCCESSFUL", "key": "develop_head", "url": "build_url"}',
-                'POST')
-        ] == m.mock_calls
+                   call(
+                       '/rest/build-status/1.0/commits/develop_head',
+                       {"state": "SUCCESSFUL", "key": "develop_head", "url": "build_url"},
+                       'POST',
+                       only_response_code=True)
+               ] == m.mock_calls
 
 
 def test_set_status():
