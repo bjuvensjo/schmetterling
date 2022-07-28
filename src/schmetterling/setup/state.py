@@ -4,25 +4,25 @@ class SetupState:
         self.repos = repos
 
     def __repr__(self):
-        return self.__class__.__name__ + ': ' + str(self.__dict__)
+        return self.__class__.__name__ + ": " + str(self.__dict__)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
 
 class Repo:
-    STATUS_UNCHANGED = 'unchanged'
-    STATUS_UPDATED = 'updated'
+    STATUS_UNCHANGED = "unchanged"
+    STATUS_UPDATED = "updated"
 
     def __init__(
-            self,
-            project,
-            name,
-            clone_url,
-            path,
-            branches,
-            setup_branch,
-            status,
+        self,
+        project,
+        name,
+        clone_url,
+        path,
+        branches,
+        setup_branch,
+        status,
     ):
         self.project = project
         self.name = name
@@ -33,7 +33,7 @@ class Repo:
         self.status = status
 
     def __repr__(self):
-        return self.__class__.__name__ + ': ' + str(self.__dict__)
+        return self.__class__.__name__ + ": " + str(self.__dict__)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -46,7 +46,7 @@ class Branch:
         self.head = head
 
     def __repr__(self):
-        return self.__class__.__name__ + ': ' + str(self.__dict__)
+        return self.__class__.__name__ + ": " + str(self.__dict__)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__

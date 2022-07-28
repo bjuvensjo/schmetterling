@@ -5,7 +5,7 @@ from shutil import rmtree
 from schmetterling.core.log import log_params_return
 
 
-@log_params_return('debug')
+@log_params_return("debug")
 def rm_paths(dirs, root):
     for d in dirs:
         rmtree(d)

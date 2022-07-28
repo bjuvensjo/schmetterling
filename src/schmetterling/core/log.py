@@ -5,7 +5,7 @@ from os import makedirs
 from sys import stdout
 
 
-def log_params_return(level='info'):
+def log_params_return(level="info"):
     def wrap(f):
         @wraps(f)
         def decorator(*args, **kwargs):
@@ -17,7 +17,7 @@ def log_params_return(level='info'):
                 raise
             finally:
                 log = getattr(getLogger(f.__module__), level)
-                log('%s: %s %s\n=> %s', f.__name__, args, kwargs, value)
+                log("%s: %s %s\n=> %s", f.__name__, args, kwargs, value)
 
         return decorator
 
@@ -31,30 +31,28 @@ def create_console_handler(formatter):
 
 
 def create_file_handler(log_dir, log_file, formatter):
-    handler = FileHandler(f'{log_dir}/{log_file}.log')
+    handler = FileHandler(f"{log_dir}/{log_file}.log")
     handler.setFormatter(formatter)
     return handler
 
 
 def create_formatter():
-    return Formatter('%(asctime)s %(levelname)s %(name)s %(message)s')
+    return Formatter("%(asctime)s %(levelname)s %(name)s %(message)s")
 
 
 def get_handlers(log_dir, log_file):
     formatter = create_formatter()
     return {
-        'console_handler':
-            create_console_handler(formatter),
-        'file_handler':
-            create_file_handler(
-                log_dir,
-                log_file,
-                formatter,
-            ),
+        "console_handler": create_console_handler(formatter),
+        "file_handler": create_file_handler(
+            log_dir,
+            log_file,
+            formatter,
+        ),
     }
 
 
-@log_params_return('debug')
+@log_params_return("debug")
 def log_config(log_dir, name, level):
     makedirs(log_dir, exist_ok=True)
 

@@ -1,21 +1,10 @@
 ## Environment setup
 
-### Virtual environment
-
-1. conda create -n schmetterling python=3.7 jsonpickle more-itertools pytest pytest-cov
-2. conda activate schmetterling
-3. pip install schedule
-4. pip install vang
-
-### PyCharm
-
-1. Import project into PyCharm
-2. In preferences, update "Project Interpreter" and "Project Structure":
-
-![Project Interpreter](Project_Interpreter.png)
-
-![Project Structure](Project_Structure.png)
-
+    pyenv install 3.10.5
+    pyenv global 3.10.5 # or pyenv local 3.10.5
+    virtualenv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
 
 ### Run
 
