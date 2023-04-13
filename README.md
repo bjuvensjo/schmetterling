@@ -1,8 +1,6 @@
 ## Environment setup
 
-	virtualenv venv
-	./venv/bin/activate
-	pip install -r requirements.txt
+See Poetry documentation.
 
 ### Run
 
