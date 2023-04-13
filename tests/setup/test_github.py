@@ -4,7 +4,7 @@
 
 # def test_get_personal_repos():
 #     github = create_github('<username>', '<password>')
-#     assert [
+#     assert get_personal_repos(github) == [
 #         'js-architecture',
 #         '.emacs.d',
 #         'Backbone.ModelExtensions',
@@ -32,4 +32,4 @@
 #         'sudoku',
 #         'wxs-examples',
 #         'presentations-cljs',
-#     ] == get_personal_repos(github)
+#     ]

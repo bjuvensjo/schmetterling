@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source .env
+source .schmetterling_env
 
 cd pipeline
 python3 continuous_delivery.py

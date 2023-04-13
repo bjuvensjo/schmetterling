@@ -4,25 +4,25 @@ class AnalyzeState:
         self.analyzes = analyzes
 
     def __repr__(self):
-        return self.__class__.__name__ + ': ' + str(self.__dict__)
+        return self.__class__.__name__ + ": " + str(self.__dict__)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
 
 class Analyze:
-    SUCCESS = 'SUCCESS'
-    FAILURE = 'FAILURE'
+    SUCCESS = "SUCCESS"
+    FAILURE = "FAILURE"
 
     def __init__(
-            self,
-            project,
-            name,
-            version,
-            path,
-            status,
-            timestamp,
-            **kwargs,
+        self,
+        project,
+        name,
+        version,
+        path,
+        status,
+        timestamp,
+        **kwargs,
     ):
         self.project = project
         self.name = name
@@ -32,7 +32,7 @@ class Analyze:
         self.timestamp = timestamp
 
     def __repr__(self):
-        return self.__class__.__name__ + ': ' + str(self.__dict__)
+        return self.__class__.__name__ + ": " + str(self.__dict__)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__

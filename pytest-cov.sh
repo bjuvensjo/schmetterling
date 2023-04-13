@@ -1,1 +1,1 @@
-pytest --cov schmetterling --cov-report html
+pytest --cov src --cov-report html

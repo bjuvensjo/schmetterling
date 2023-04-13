@@ -14,18 +14,18 @@ def get_execute(module=None, execute=None, **kwargs):
 
 
 # TODO Manage state in its own git repo
-@log_params_return('info')
+@log_params_return("info")
 def pipeline(steps):
     try:
         state = []
         for step in steps:
             execute = get_execute(**step)
-            params = step.get('params', None) 
+            params = step.get("params", None)
             step_state = execute(state, **params) if params else execute(state)
             state.append(step_state)
         # log.info('State: %s', state)
         return state
     except Exception as e:
         print_exc(file=sys.stdout)
-        log.error('Error in pipeline', e)
+        log.error("Error in pipeline", e)
         # raise e
