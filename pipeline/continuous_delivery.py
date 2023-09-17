@@ -3,83 +3,52 @@
 from os import environ
 from time import sleep
 
-from schedule import every
-from schedule import run_all
-from schedule import run_pending
+from schedule import every, run_all, run_pending
 from vang.core.core import create_timestamp
 
 from schmetterling.pipeline import pipeline
 
-delivery_dir = '/Users/magnus/slask/schmetterling'
+delivery_dir = "/Users/magnus/slask/schmetterling"
 timestamp = create_timestamp()
-log_dir = f'{delivery_dir}/logs/{timestamp}'
+log_dir = f"{delivery_dir}/logs/{timestamp}"
 
 steps = [
     {
-        'module': 'schmetterling.log.log',
-        'params': {
-            'log_dir': log_dir,
-            'name': 'schmetterling',
-            'level': 'DEBUG'
-        }
+        "module": "schmetterling.log.log",
+        "params": {"log_dir": log_dir, "name": "schmetterling", "level": "DEBUG"},
+    },
+    {"module": "schmetterling.state.load", "params": {"root": delivery_dir}},
+    {
+        "module": "schmetterling.setup.bitbucket",
+        "params": {
+            "url": "http://cuso.edb.se/stash",
+            "username": environ["U"],
+            "password": environ["P"],
+            "setup_dir": f"{delivery_dir}/setup",
+            "setup_branch": "develop",
+            "projects": {"ZTEST": {"excludes": ["ws", "s1"], "includes": []}},
+        },
+    },
+    {"module": "schmetterling.tag.git_delivery", "params": {"timestamp": timestamp}},
+    {
+        "module": "test.foo",
+        "params": {"param1": "param1_value", "param2": "param2_value"},
     },
     {
-        'module': 'schmetterling.state.load',
-        'params': {
-            'root': delivery_dir
-        }
-    },
-    {
-        'module': 'schmetterling.setup.bitbucket',
-        'params': {
-            'url': 'http://cuso.edb.se/stash',
-            'username': environ['U'],
-            'password': environ['P'],
-            'setup_dir': f'{delivery_dir}/setup',
-            'setup_branch': 'develop',
-            'projects': {
-                'ZTEST': {
-                    'excludes': ['ws', 's1'],
-                    'includes': []
-                }
-            }
-        }
-    },
-    {
-        'module': 'schmetterling.tag.git_delivery',
-        'params': {
-            'timestamp': timestamp
-        }
-    },
-    {
-        'module': 'test.foo',
-        'params': {
-            'param1': 'param1_value',
-            'param2': 'param2_value'
-        }
-    },
-    {
-        'module': 'schmetterling.build.maven',
-        'params': {
-            'build_dir':
-                f'{delivery_dir}/build/develop',
-            'repository_dir':
-                f'{delivery_dir}/repository/develop',
-            'settings_file':
+        "module": "schmetterling.build.maven",
+        "params": {
+            "build_dir": f"{delivery_dir}/build/develop",
+            "repository_dir": f"{delivery_dir}/repository/develop",
+            "settings_file":
             # f'{delivery_dir}/setup/develop/PCS1806/maven.settings/src/main/resources/settings.xml',
-                f'/Users/magnus/.m2/settings.xml',
-            'logback_file':
-                '/Users/magnus/git/schmetterling/config/logback.xml',
-            'timestamp': timestamp
-        }
+            "/Users/magnus/.m2/settings.xml",
+            "logback_file": "/Users/magnus/git/schmetterling/config/logback.xml",
+            "timestamp": timestamp,
+        },
     },
     {
-        'module': 'schmetterling.build.gradle',
-        'params': {
-            'projects_dir':
-                f'{delivery_dir}/setup',
-            'timestamp': timestamp
-        }
+        "module": "schmetterling.build.gradle",
+        "params": {"projects_dir": f"{delivery_dir}/setup", "timestamp": timestamp},
     },
     #     {
     #     'module': 'schmetterling.analyze.sonarqube',
@@ -92,20 +61,18 @@ steps = [
     #         'sonar_auth_token': 'dbef1abdbb6f61faa9d7012a472d0375b6e8dde1'
     #     }
     # },
-    {
-        'module': 'schmetterling.push.git'
-    },
+    {"module": "schmetterling.push.git"},
     #     {
     #     'module': 'schmetterling.hook.bitbucket',
     #     'params': {
     #         'hook': f'http://{environ["HOST_IP"]}:{environ["HOST_PORT"]}/schmetterling/webhook/'
     #     }
     # },
+    {"module": "test.bar"},
     {
-        'module': 'test.bar'
-    },
-    {
-        'execute': lambda state, **params: print('#' * 80, '##### lambda', '#' * 80, sep='\n')
+        "execute": lambda state, **params: print(
+            "#" * 80, "##### lambda", "#" * 80, sep="\n"
+        )
     },
     #     {
     #     'module': 'schmetterling.build_status.bitbucket',
@@ -120,12 +87,9 @@ steps = [
     #     }
     # },
     {
-        'module': 'schmetterling.state.dump',
-        'params': {
-            'root': delivery_dir,
-            'timestamp': timestamp
-        }
-    }
+        "module": "schmetterling.state.dump",
+        "params": {"root": delivery_dir, "timestamp": timestamp},
+    },
 ]
 
 
@@ -143,6 +107,6 @@ def schedule():
         sleep(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # schedule()
     pipeline(steps)
