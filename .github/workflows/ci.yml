@@ -9,6 +9,8 @@ on:
 
 jobs:
   build:
-    uses: bjuvensjo/.github/.github/workflows/python-poetry-ci.yml@main
+    uses: bjuvensjo/.github/.github/workflows/python-uv-ci.yml@main
     with:
-      cov: src
+      coverage_source: py_scripts
+      runs-on: '["ubuntu-latest"]'
+      version: '["3.12"]'
