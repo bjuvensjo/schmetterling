@@ -11,6 +11,6 @@ jobs:
   build:
     uses: bjuvensjo/.github/.github/workflows/python-uv-ci.yml@main
     with:
-      coverage_source: py_scripts
+      coverage_source: schmetterling
       runs-on: '["ubuntu-latest"]'
       version: '["3.12"]'
