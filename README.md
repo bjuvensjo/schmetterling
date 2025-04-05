@@ -1,6 +1,6 @@
 ## Environment setup
 
-See Poetry documentation.
+See uv documentation.
 
 ### Run
 
